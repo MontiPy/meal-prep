@@ -13,3 +13,5 @@ export interface MealIngredient {
   ingredient: Ingredient;
   serving: number;
 }
+
+export type MealName = 'breakfast' | 'lunch' | 'dinner';
