@@ -6,7 +6,7 @@ export default function CalculatorPage() {
     <main className="flex flex-col items-center justify-center min-h-screen p-8">
       <h1 className="text-3xl font-bold mb-6">BMR & TDEE Calculator</h1>
       {/* Your calculator form goes here */}
-      <Link href="/dashboard" className="mt-10 underline text-blue-600">
+      <Link href="/" className="mt-10 underline text-blue-600">
         ← Back to Dashboard
       </Link>
     </main>

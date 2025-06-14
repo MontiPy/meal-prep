@@ -1,6 +1,4 @@
-// /src/app/page.js
-import { redirect } from "next/navigation";
-
+import DashboardContent from "./DashboardContent";
 export default function Home() {
-  redirect("/login");
+  return <DashboardContent />;
 }
