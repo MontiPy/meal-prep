@@ -23,9 +23,9 @@ export default function SingleDayMealPlanPage() {
   });
   const [calorieGoal, setCalorieGoal] = useState(2000);
   const [macroPercents, setMacroPercents] = useState({
-    protein: 30,
-    carbs: 40,
-    fat: 30,
+    protein: 40,
+    carbs: 35,
+    fat: 25,
   });
   const [dragItem, setDragItem] = useState(null);
 
@@ -118,7 +118,9 @@ export default function SingleDayMealPlanPage() {
               setMacroPercents={setMacroPercents}
             />
           </div>
-          <h1 className="text-2xl font-bold mb-4 text-center">Single Day Meal Plan</h1>
+          <h1 className="text-2xl font-bold mb-4 text-center">
+            Single Day Meal Plan
+          </h1>
           <SingleDayPlan
             meals={meals}
             onRemoveItem={handleRemoveItem}
