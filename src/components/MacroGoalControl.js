@@ -10,25 +10,17 @@ export default function MacroGoalControl({
 }) {
   // Handler for sliders
   const handleChange = (macro, value) => {
-    value = Math.max(0, Math.min(100, Number(value)));
-    let other = macro === "protein" ? "fat" : "protein";
+    value = Number(value);
+    const other = macro === "protein" ? "fat" : "protein";
     setMacroPercents((prev) => {
-      let carbs = 100 - value - prev[other];
-      if (carbs < 0) {
-        let over = Math.abs(carbs);
-        let newOther = Math.max(0, prev[other] - over);
-        carbs = 100 - value - newOther;
-        return {
-          ...prev,
-          [macro]: value,
-          [other]: newOther,
-          carbs,
-        };
-      }
+      // clamp so carbs never drop below zero
+      const clamped = Math.max(0, Math.min(100 - prev[other], value));
       return {
         ...prev,
-        [macro]: value,
-        carbs,
+        [macro]: clamped,
+        carbs:
+          100 - (macro === "protein" ? clamped : prev.protein) -
+          (macro === "fat" ? clamped : prev.fat),
       };
     });
   };
