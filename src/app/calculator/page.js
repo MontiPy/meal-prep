@@ -53,7 +53,9 @@ export default function CalculatorPage() {
         setGender(data.gender || "male");
         setWeight(data.weight !== undefined ? String(data.weight) : "");
         setHeight(data.height !== undefined ? String(data.height) : "");
-        setActivity(data.activity !== undefined ? String(data.activity) : 1.375);
+        setActivity(
+          data.activity !== undefined ? String(data.activity) : 1.375
+        );
         setWeeklyChange(data.weeklyChange || 0);
       }
     };
@@ -139,7 +141,7 @@ export default function CalculatorPage() {
           className={`px-4 py-1 rounded-xl border ${
             unit === "imperial"
               ? "bg-blue-700 text-white border-blue-700"
-              : "bg-gray-200 dark:bg-zinc-800"
+              : "bg-gray-200 text-white dark:bg-zinc-800"
           }`}
         >
           Imperial
@@ -150,14 +152,14 @@ export default function CalculatorPage() {
           className={`px-4 py-1 rounded-xl border ${
             unit === "metric"
               ? "bg-blue-700 text-white border-blue-700"
-              : "bg-gray-200 dark:bg-zinc-800"
+              : "bg-gray-200 text-white dark:bg-zinc-800"
           }`}
         >
           Metric
         </button>
       </div>
       <form
-        className="bg-white dark:bg-zinc-900 shadow-xl rounded-2xl p-6 flex flex-col gap-4 w-full max-w-md"
+        className="bg-white shadow-xl rounded-2xl p-6 flex flex-col gap-4 w-full max-w-md"
         onSubmit={(e) => e.preventDefault()}
       >
         <label>
@@ -272,7 +274,11 @@ export default function CalculatorPage() {
             <>
               <span className="font-bold">{calcDailyGoal()} kcal/day</span>{" "}
               <span className="text-xs text-gray-500">
-                (for your goal of {unit === "imperial" ? `${weeklyChange.toFixed(2)} lbs` : `${weeklyChange.toFixed(2)} kg`} per week)
+                (for your goal of{" "}
+                {unit === "imperial"
+                  ? `${weeklyChange.toFixed(2)} lbs`
+                  : `${weeklyChange.toFixed(2)} kg`}{" "}
+                per week)
               </span>
             </>
           ) : (
@@ -288,7 +294,10 @@ export default function CalculatorPage() {
         Save Goal
       </button>
 
-      <Link href="/dashboard" className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl">
+      <Link
+        href="/"
+        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl"
+      >
         ← Back to Dashboard
       </Link>
     </main>
