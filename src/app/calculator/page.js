@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import HeaderBar from "../HeaderBar";
+import Link from "next/link";
 
 const activityLevels = [
   { label: "Sedentary (little or no exercise)", value: 1.2 },
@@ -10,155 +10,238 @@ const activityLevels = [
   { label: "Extra active (hard exercise & physical job)", value: 1.9 },
 ];
 
-export default function CalculatorPage() {
-  const [gender, setGender] = useState("");
-  const [age, setAge] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [activity, setActivity] = useState("");
-  const [tdee, setTDEE] = useState(null);
+const genders = [
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
 
-  function calcTDEE() {
-    if (!gender || !age || !height || !weight || !activity) return;
-    const w = Number(weight);
-    const h = Number(height);
-    const a = Number(age);
-    let bmr =
-      gender === "male"
-        ? 10 * w + 6.25 * h - 5 * a + 5
-        : 10 * w + 6.25 * h - 5 * a - 161;
-    setTDEE(Math.round(bmr * Number(activity)));
-  }
+function lbToKg(lb) {
+  return lb / 2.20462;
+}
+function kgToLb(kg) {
+  return kg * 2.20462;
+}
+function inToCm(inches) {
+  return inches * 2.54;
+}
+function cmToIn(cm) {
+  return cm / 2.54;
+}
+
+export default function CalculatorPage() {
+  const [unit, setUnit] = useState("imperial");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("male");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [activity, setActivity] = useState(1.375);
+  const [weeklyChange, setWeeklyChange] = useState(0);
+
+  const getWeightKg = () =>
+    unit === "imperial" ? lbToKg(Number(weight)) : Number(weight);
+  const getHeightCm = () =>
+    unit === "imperial" ? inToCm(Number(height)) : Number(height);
+
+  const calcBMR = () => {
+    if (!age || !height || !weight) return 0;
+    const w = getWeightKg();
+    const h = getHeightCm();
+    if (gender === "male") {
+      return Math.round(10 * w + 6.25 * h - 5 * Number(age) + 5);
+    } else {
+      return Math.round(10 * w + 6.25 * h - 5 * Number(age) - 161);
+    }
+  };
+
+  const calcTDEE = () => Math.round(calcBMR() * Number(activity));
+
+  const calcCalorieAdjustment = () => {
+    if (unit === "imperial") {
+      return (weeklyChange * 3500) / 7;
+    } else {
+      return (weeklyChange * 7700) / 7;
+    }
+  };
+
+  const calcDailyGoal = () => {
+    const tdee = calcTDEE();
+    if (!tdee) return 0;
+    return Math.round(tdee + calcCalorieAdjustment());
+  };
+
+  const sliderProps =
+    unit === "imperial"
+      ? { min: -3, max: 3, step: 0.1 }
+      : { min: -1.36, max: 1.36, step: 0.05 };
+
+  const handleUnitChange = (newUnit) => {
+    if (unit === newUnit) return;
+    setUnit(newUnit);
+    setWeeklyChange(0);
+    if (newUnit === "imperial") {
+      setWeight(weight ? kgToLb(Number(weight)).toFixed(1) : "");
+      setHeight(height ? cmToIn(Number(height)).toFixed(1) : "");
+    } else {
+      setWeight(weight ? lbToKg(Number(weight)).toFixed(1) : "");
+      setHeight(height ? inToCm(Number(height)).toFixed(1) : "");
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#fff4e5]">
-      <HeaderBar />
-      <main className="flex flex-col items-center justify-start px-2 min-h-[calc(100vh-70px)]">
-        <div className="w-full max-w-lg bg-white rounded-3xl shadow-lg p-8 mt-10 mb-16">
-          <h1 className="text-3xl font-bold mb-3 tracking-tight text-gray-900">
-            TDEE Calculator
-          </h1>
-          <p className="mb-7 text-base text-gray-800 leading-snug">
-            Calculate your Total Daily Energy Expenditure (TDEE) to determine
-            your daily calorie needs. This calculator uses the Mifflin-St Jeor
-            equation, considered one of the most accurate methods for estimating
-            TDEE.
-          </p>
-          {/* Form fields */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              calcTDEE();
-            }}
-            className="flex flex-col gap-4"
+    <main className="flex flex-col items-center justify-center min-h-screen p-6">
+      <h1 className="text-3xl font-bold mb-4">BMR & TDEE Calculator</h1>
+      <div className="mb-4 flex gap-4">
+        <button
+          type="button"
+          onClick={() => handleUnitChange("imperial")}
+          className={`px-4 py-1 rounded-xl border ${
+            unit === "imperial"
+              ? "bg-blue-700 text-white border-blue-700"
+              : "bg-gray-200 dark:bg-zinc-800"
+          }`}
+        >
+          Imperial
+        </button>
+        <button
+          type="button"
+          onClick={() => handleUnitChange("metric")}
+          className={`px-4 py-1 rounded-xl border ${
+            unit === "metric"
+              ? "bg-blue-700 text-white border-blue-700"
+              : "bg-gray-200 dark:bg-zinc-800"
+          }`}
+        >
+          Metric
+        </button>
+      </div>
+      <form
+        className="bg-white dark:bg-zinc-900 shadow-xl rounded-2xl p-6 flex flex-col gap-4 w-full max-w-md"
+        onSubmit={(e) => e.preventDefault()}
+      >
+        <label>
+          Age
+          <input
+            type="number"
+            className="w-full mt-1 px-2 py-1 rounded border"
+            min="10"
+            max="120"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            placeholder="years"
+            required
+          />
+        </label>
+        <label>
+          Gender
+          <div className="flex gap-4 mt-1">
+            {genders.map((g) => (
+              <label key={g.value} className="flex items-center gap-1">
+                <input
+                  type="radio"
+                  name="gender"
+                  value={g.value}
+                  checked={gender === g.value}
+                  onChange={() => setGender(g.value)}
+                />
+                {g.label}
+              </label>
+            ))}
+          </div>
+        </label>
+        <label>
+          {unit === "imperial" ? "Height (inches)" : "Height (cm)"}
+          <input
+            type="number"
+            className="w-full mt-1 px-2 py-1 rounded border"
+            min={unit === "imperial" ? 36 : 90}
+            max={unit === "imperial" ? 90 : 250}
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            placeholder={unit === "imperial" ? "inches" : "cm"}
+            required
+          />
+        </label>
+        <label>
+          {unit === "imperial" ? "Weight (lbs)" : "Weight (kg)"}
+          <input
+            type="number"
+            className="w-full mt-1 px-2 py-1 rounded border"
+            min={unit === "imperial" ? 66 : 30}
+            max={unit === "imperial" ? 500 : 250}
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            placeholder={unit === "imperial" ? "lbs" : "kg"}
+            required
+          />
+        </label>
+        <label>
+          Activity Level
+          <select
+            className="w-full mt-1 px-2 py-1 rounded border"
+            value={activity}
+            onChange={(e) => setActivity(e.target.value)}
           >
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Gender
-              </label>
-              <select
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
-                value={gender}
-                onChange={(e) => setGender(e.target.value)}
-                required
-              >
-                <option value="">Select</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Age (years)
-              </label>
-              <input
-                type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
-                placeholder="Enter your age"
-                value={age}
-                min={10}
-                max={120}
-                onChange={(e) => setAge(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Height (cm)
-              </label>
-              <input
-                type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
-                placeholder="Enter your height"
-                value={height}
-                min={90}
-                max={250}
-                onChange={(e) => setHeight(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Weight (kg)
-              </label>
-              <input
-                type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
-                placeholder="Enter your weight"
-                value={weight}
-                min={30}
-                max={250}
-                onChange={(e) => setWeight(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Activity Level
-              </label>
-              <select
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
-                value={activity}
-                onChange={(e) => setActivity(e.target.value)}
-                required
-              >
-                <option value="">Select</option>
-                {activityLevels.map((lvl) => (
-                  <option value={lvl.value} key={lvl.value}>
-                    {lvl.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl transition mt-2"
-            >
-              Calculate TDEE
-            </button>
-          </form>
-          {/* Result */}
-          <div className="mt-6">
-            <h2 className="text-xl font-bold mb-1 text-gray-900">Your TDEE</h2>
-            <p className="text-base text-gray-800 leading-normal">
-              {tdee ? (
-                <>
-                  Your estimated TDEE is <b>{tdee} calories per day</b>.
-                  <br />
-                  This is the number of calories you need to maintain your
-                  current weight. To lose weight, aim for a calorie deficit, and
-                  to gain weight, aim for a calorie surplus.
-                </>
-              ) : (
-                <>
-                  Enter your information and click "Calculate TDEE" to see your
-                  result here.
-                </>
-              )}
-            </p>
+            {activityLevels.map((a) => (
+              <option value={a.value} key={a.value}>
+                {a.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div className="flex flex-col gap-2 mt-2">
+          <label className="font-semibold">
+            Target Weekly Weight Change:{" "}
+            <span className="text-blue-700 dark:text-blue-300 font-bold">
+              {unit === "imperial"
+                ? `${weeklyChange.toFixed(2)} lbs/week`
+                : `${weeklyChange.toFixed(2)} kg/week`}
+            </span>
+          </label>
+          <input
+            type="range"
+            {...sliderProps}
+            value={weeklyChange}
+            onChange={(e) => setWeeklyChange(Number(e.target.value))}
+            className="w-full"
+          />
+          <div className="flex justify-between text-sm">
+            <span>{unit === "imperial" ? "-3 lbs/week" : "-1.36 kg/week"}</span>
+            <span>0</span>
+            <span>{unit === "imperial" ? "+3 lbs/week" : "+1.36 kg/week"}</span>
+          </div>
+          <div className="text-gray-500 text-xs">
+            (Negative: lose weight, Positive: gain weight)
           </div>
         </div>
-      </main>
-    </div>
+      </form>
+
+      <div className="mt-6 bg-blue-100 dark:bg-zinc-800 text-blue-900 dark:text-blue-200 rounded-xl p-4 w-full max-w-md flex flex-col gap-2">
+        <div>
+          <span className="font-semibold">BMR: </span>
+          {calcBMR() > 0 ? `${calcBMR()} kcal/day` : "—"}
+        </div>
+        <div>
+          <span className="font-semibold">TDEE: </span>
+          {calcTDEE() > 0 ? `${calcTDEE()} kcal/day` : "—"}
+        </div>
+        <div>
+          <span className="font-semibold">Daily Calorie Goal: </span>
+          {calcDailyGoal() > 0 ? (
+            <>
+              <span className="font-bold">{calcDailyGoal()} kcal/day</span>{" "}
+              <span className="text-xs text-gray-500">
+                (for your goal of {unit === "imperial" ? `${weeklyChange.toFixed(2)} lbs` : `${weeklyChange.toFixed(2)} kg`} per week)
+              </span>
+            </>
+          ) : (
+            "—"
+          )}
+        </div>
+      </div>
+
+      <Link href="/dashboard" className="mt-8 px-4 py-2 bg-gray-600 text-white rounded-xl">
+        ← Back to Dashboard
+      </Link>
+    </main>
   );
 }

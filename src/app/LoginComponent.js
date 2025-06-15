@@ -9,12 +9,9 @@ export default function LoginComponent() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[40vh] p-6">
-      <h1 className="text-3xl font-bold mb-4">Sign In</h1>
-      <button
-        onClick={handleLogin}
-        className="px-6 py-3 bg-blue-700 text-white text-xl rounded-xl shadow-xl"
-      >
+    <div className="flex flex-col items-center justify-center min-h-[40vh] p-6 anime-card">
+      <h1 className="text-3xl font-bold mb-4 font-heading">Sign In</h1>
+      <button onClick={handleLogin} className="anime-btn text-xl">
         Sign in with Google
       </button>
     </div>

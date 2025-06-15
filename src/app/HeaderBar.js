@@ -3,7 +3,10 @@ import Link from "next/link";
 
 export default function HeaderBar() {
   return (
-    <header className="sticky top-0 z-10 w-full bg-white/95 border-b border-gray-100 shadow-sm">
+    <header
+      className="sticky top-0 z-10 w-full border-b border-gray-100 shadow-sm"
+      style={{ background: "var(--anime-card)" }}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
           {/* App logo (replace with your own if you want) */}
@@ -13,7 +16,7 @@ export default function HeaderBar() {
               fill="currentColor"
             />
           </svg> */}
-          <span className="font-extrabold text-lg text-gray-900 tracking-tight">
+          <span className="font-extrabold text-lg text-gray-900 tracking-tight font-heading">
             MealPrep
           </span>
         </div>
@@ -44,10 +47,8 @@ export default function HeaderBar() {
           </Link>
         </nav>
         <div className="flex gap-2">
-          <button className="rounded-xl bg-primary text-white text-sm font-bold px-5 py-2 shadow hover:bg-blue-700 transition">
-            Sign Up
-          </button>
-          <button className="rounded-xl bg-gray-100 text-gray-900 text-sm font-bold px-5 py-2 hover:bg-gray-200 transition">
+          <button className="anime-btn text-sm">Sign Up</button>
+          <button className="anime-btn text-sm" style={{ background: "var(--anime-blue)", color: "white" }}>
             Login
           </button>
         </div>

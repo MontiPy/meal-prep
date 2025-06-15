@@ -28,13 +28,7 @@ export default function DashboardContent() {
             Sign Out
           </button>
         </div>
-        <h1
-          className="text-3xl font-bold mb-8"
-          style={{
-            color: "#d45437",
-            fontFamily: "'Mochiy Pop One', sans-serif",
-          }}
-        >
+        <h1 className="text-3xl font-bold mb-8 font-heading" style={{ color: "#d45437" }}>
           What would you like to do?
         </h1>
         <div className="flex flex-col gap-6">
