@@ -16,13 +16,19 @@ export default function CalculatorPage() {
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
   const [activity, setActivity] = useState("");
+  const [unitSystem, setUnitSystem] = useState("imperial");
   const [tdee, setTDEE] = useState(null);
+  const [weeklyChange, setWeeklyChange] = useState(0);
 
   function calcTDEE() {
     if (!gender || !age || !height || !weight || !activity) return;
-    const w = Number(weight);
-    const h = Number(height);
     const a = Number(age);
+    let w = Number(weight);
+    let h = Number(height);
+    if (unitSystem === "imperial") {
+      w = w * 0.453592; // convert lbs to kg
+      h = h * 2.54; // convert inches to cm
+    }
     let bmr =
       gender === "male"
         ? 10 * w + 6.25 * h - 5 * a + 5
@@ -66,6 +72,17 @@ export default function CalculatorPage() {
               </select>
             </div>
             <div>
+              <label className="anime-label">Units</label>
+              <select
+                className="anime-input"
+                value={unitSystem}
+                onChange={(e) => setUnitSystem(e.target.value)}
+              >
+                <option value="imperial">Imperial</option>
+                <option value="metric">Metric</option>
+              </select>
+            </div>
+            <div>
               <label className="anime-label">Age (years)</label>
               <input
                 type="number"
@@ -79,27 +96,31 @@ export default function CalculatorPage() {
               />
             </div>
             <div>
-              <label className="anime-label">Height (cm)</label>
+              <label className="anime-label">
+                Height {unitSystem === "metric" ? "(cm)" : "(inches)"}
+              </label>
               <input
                 type="number"
                 className="anime-input"
                 placeholder="Enter your height"
                 value={height}
-                min={90}
-                max={250}
+                min={unitSystem === "metric" ? 90 : 35}
+                max={unitSystem === "metric" ? 250 : 96}
                 onChange={(e) => setHeight(e.target.value)}
                 required
               />
             </div>
             <div>
-              <label className="anime-label">Weight (kg)</label>
+              <label className="anime-label">
+                Weight {unitSystem === "metric" ? "(kg)" : "(lbs)"}
+              </label>
               <input
                 type="number"
                 className="anime-input"
                 placeholder="Enter your weight"
                 value={weight}
-                min={30}
-                max={250}
+                min={unitSystem === "metric" ? 30 : 50}
+                max={unitSystem === "metric" ? 250 : 600}
                 onChange={(e) => setWeight(e.target.value)}
                 required
               />
@@ -143,6 +164,25 @@ export default function CalculatorPage() {
                 </>
               )}
             </p>
+            {tdee && (
+              <div className="mt-5">
+                <label className="anime-label">
+                  Weekly change (lbs): {weeklyChange}
+                </label>
+                <input
+                  type="range"
+                  min={-3}
+                  max={3}
+                  step={0.5}
+                  value={weeklyChange}
+                  onChange={(e) => setWeeklyChange(Number(e.target.value))}
+                  className="w-full"
+                />
+                <p className="mt-3 text-base text-gray-800">
+                  Daily calorie goal: <b>{Math.round(tdee + weeklyChange * 500)}</b>
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </main>
