@@ -110,7 +110,12 @@ export default function SingleDayMealPlanPage() {
         <div className="flex flex-1 flex-col md:flex-row">
           <main className="flex-1 p-4 overflow-auto">
             <h1 className="text-2xl font-bold mb-4">Single Day Meal Plan</h1>
-            <SingleDayPlan meals={meals} onRemoveItem={handleRemoveItem} />
+            <SingleDayPlan
+              meals={meals}
+              onRemoveItem={handleRemoveItem}
+              calorieGoal={calorieGoal}
+              macroPercents={macroPercents}
+            />
             <DragOverlay>
               {dragItem && (
                 <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">
