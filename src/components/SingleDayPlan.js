@@ -29,7 +29,7 @@ function getItemMacros(item) {
   return { kcal: 0, p: 0, c: 0, f: 0 };
 }
 
-export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, macroPercents }) {
+export default function SingleDayPlan({ meals, onRemoveItem, onUpdateItem, calorieGoal = 0, macroPercents }) {
   // meals: { Breakfast: [], Lunch: [], Dinner: [] }
 
   // Macro sum for each meal
@@ -94,6 +94,7 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
                 meal={meal}
                 items={meals[meal]}
                 onRemoveItem={onRemoveItem}
+                onUpdateItem={onUpdateItem}
               />
             ))}
           </tr>

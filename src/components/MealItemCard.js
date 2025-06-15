@@ -22,7 +22,7 @@ function getRecipeNutrition(item) {
     : null;
 }
 
-export default function MealItemCard({ item, onRemove }) {
+export default function MealItemCard({ item, onRemove, onUpdate }) {
   const nutrition =
     item.type === "ingredient"
       ? getIngredientNutrition(item)
@@ -46,8 +46,17 @@ export default function MealItemCard({ item, onRemove }) {
     >
       <div className="flex items-center gap-x-1 whitespace-nowrap">
         <span>{item.name}</span>
-        {item.grams !== undefined && (
-          <span className="text-[9px] text-gray-600">({item.grams}g)</span>
+        {item.type === "ingredient" && (
+          <input
+            type="number"
+            step="any"
+            className="w-14 text-[9px] border rounded px-1"
+            value={item.grams ?? ""}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              onUpdate && onUpdate({ grams: isNaN(val) ? 0 : val });
+            }}
+          />
         )}
         {item.type === "recipe" && (
           <span className="text-[9px] text-blue-600 bg-blue-50 rounded px-1 py-[1px]">

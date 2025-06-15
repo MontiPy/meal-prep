@@ -91,18 +91,22 @@ export default function SingleDayMealPlanPage() {
 
       let newItem = { ...data };
       if (newItem.type === "ingredient") {
-        const gramsInput = window.prompt(
-          `How many grams of ${newItem.name}?`,
-          newItem.servingSize || ""
-        );
-        if (gramsInput === null) return prev;
-        const grams = parseFloat(gramsInput);
-        if (!isNaN(grams)) {
-          newItem.grams = grams;
+        if (newItem.servingSize) {
+          newItem.grams = newItem.servingSize;
         }
       }
 
       updated[meal] = [...updated[meal], newItem];
+      return updated;
+    });
+  };
+
+  const handleUpdateItem = (meal, idx, fields) => {
+    setMeals((prev) => {
+      const updated = { ...prev };
+      updated[meal] = updated[meal].map((item, i) =>
+        i === idx ? { ...item, ...fields } : item
+      );
       return updated;
     });
   };
@@ -137,6 +141,7 @@ export default function SingleDayMealPlanPage() {
           <SingleDayPlan
             meals={meals}
             onRemoveItem={handleRemoveItem}
+            onUpdateItem={handleUpdateItem}
             calorieGoal={calorieGoal}
             macroPercents={macroPercents}
           />
