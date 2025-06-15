@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+
 
 export default function MacroGoalControl({
   calorieGoal,
@@ -12,25 +12,25 @@ export default function MacroGoalControl({
   const handleChange = (macro, value) => {
     value = Math.max(0, Math.min(100, Number(value)));
     let other = macro === "protein" ? "fat" : "protein";
-    let carbs = 100 - value - macroPercents[other];
-    if (carbs < 0) {
-      // Reduce other macro if needed
-      let over = Math.abs(carbs);
-      let newOther = Math.max(0, macroPercents[other] - over);
-      carbs = 100 - value - newOther;
-      setMacroPercents({
-        ...macroPercents,
+    setMacroPercents((prev) => {
+      let carbs = 100 - value - prev[other];
+      if (carbs < 0) {
+        let over = Math.abs(carbs);
+        let newOther = Math.max(0, prev[other] - over);
+        carbs = 100 - value - newOther;
+        return {
+          ...prev,
+          [macro]: value,
+          [other]: newOther,
+          carbs,
+        };
+      }
+      return {
+        ...prev,
         [macro]: value,
-        [other]: newOther,
         carbs,
-      });
-    } else {
-      setMacroPercents({
-        ...macroPercents,
-        [macro]: value,
-        carbs,
-      });
-    }
+      };
+    });
   };
 
   // When user info updates, update calorieGoal (if desired)

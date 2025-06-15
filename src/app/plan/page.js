@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import Sidebar from "@/components/Sidebar";
 import SingleDayPlan from "@/components/SingleDayPlan";
@@ -30,9 +30,15 @@ export default function SingleDayMealPlanPage() {
   const [dragItem, setDragItem] = useState(null);
 
   useEffect(() => {
-    if (user && user.dailyGoal) {
-      setCalorieGoal(user.dailyGoal);
-    }
+    const fetchGoal = async () => {
+      if (!user) return;
+      const docRef = doc(db, "users", user.uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists() && snap.data().dailyGoal) {
+        setCalorieGoal(snap.data().dailyGoal);
+      }
+    };
+    fetchGoal();
   }, [user]);
 
   useEffect(() => {
