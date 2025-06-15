@@ -31,7 +31,7 @@ export default function MacroGoalControl({
   };
 
   return (
-    <div className="mb-4 p-4 bg-white rounded shadow max-w-2xl mx-auto flex flex-col gap-3">
+    <div className="mb-2 p-2 bg-white rounded shadow max-w-xl mx-auto flex flex-col gap-2 text-sm">
       <div className="flex items-end gap-2 mb-2">
         <label className="text-sm font-semibold">Daily Calorie Target:</label>
         <span className="ml-2 font-mono">{calorieGoal ?? "—"}</span>

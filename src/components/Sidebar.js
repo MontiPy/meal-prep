@@ -3,7 +3,7 @@ import SidebarItem from "./SidebarItem";
 
 export default function Sidebar({ ingredients, recipes }) {
   return (
-    <aside className="md:w-[340px] w-full md:border-l border-t md:border-t-0 flex flex-col sticky top-0 right-0 max-h-screen h-screen bg-gray-50 z-10">
+    <aside className="md:w-[340px] w-full md:border-l border-t md:border-t-0 flex flex-col sticky top-0 right-0 h-screen bg-gray-50 z-10">
       <div className="flex flex-col h-full">
         <div className="overflow-y-auto border-b p-2" style={{ height: "33%" }}>
           <h2 className="font-bold mb-2 text-xs">Recipes</h2>

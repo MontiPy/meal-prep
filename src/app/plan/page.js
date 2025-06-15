@@ -93,42 +93,45 @@ export default function SingleDayMealPlanPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="p-4">
-        <MacroGoalControl
-          calorieGoal={calorieGoal}
-          // setCalorieGoal={setCalorieGoal}
-          macroPercents={macroPercents}
-          setMacroPercents={setMacroPercents}
-        />
-      </div>
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-      >
-        <div className="flex flex-1 flex-col md:flex-row">
-          <main className="flex-1 p-4 overflow-auto">
-            <h1 className="text-2xl font-bold mb-4">Single Day Meal Plan</h1>
-            <SingleDayPlan meals={meals} onRemoveItem={handleRemoveItem} />
-            <DragOverlay>
-              {dragItem && (
-                <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">
-                  <div className="flex items-center gap-x-1 whitespace-nowrap">
-                    <span>{dragItem.name}</span>
-                    {dragItem.type === "recipe" && (
-                      <span className="text-[9px] text-blue-600 bg-blue-50 rounded px-1 py-[1px]">
-                        [Recipe]
-                      </span>
-                    )}
-                  </div>
+    <DndContext
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
+    >
+      <div className="grid min-h-screen grid-cols-1 md:grid-cols-[1fr_340px]">
+        <main className="p-4 overflow-auto flex flex-col items-center">
+          <div className="mb-4">
+            <MacroGoalControl
+              calorieGoal={calorieGoal}
+              // setCalorieGoal={setCalorieGoal}
+              macroPercents={macroPercents}
+              setMacroPercents={setMacroPercents}
+            />
+          </div>
+          <h1 className="text-2xl font-bold mb-4 text-center">Single Day Meal Plan</h1>
+          <SingleDayPlan
+            meals={meals}
+            onRemoveItem={handleRemoveItem}
+            calorieGoal={calorieGoal}
+            macroPercents={macroPercents}
+          />
+          <DragOverlay>
+            {dragItem && (
+              <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">
+                <div className="flex items-center gap-x-1 whitespace-nowrap">
+                  <span>{dragItem.name}</span>
+                  {dragItem.type === "recipe" && (
+                    <span className="text-[9px] text-blue-600 bg-blue-50 rounded px-1 py-[1px]">
+                      [Recipe]
+                    </span>
+                  )}
                 </div>
-              )}
-            </DragOverlay>
-          </main>
-          <Sidebar ingredients={ingredients} recipes={recipes} />
-        </div>
-      </DndContext>
-    </div>
+              </div>
+            )}
+          </DragOverlay>
+        </main>
+        <Sidebar ingredients={ingredients} recipes={recipes} />
+      </div>
+    </DndContext>
   );
 }
