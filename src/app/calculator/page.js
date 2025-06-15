@@ -1,6 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useAuth } from "../AuthContext";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const activityLevels = [
   { label: "Sedentary (little or no exercise)", value: 1.2 },
@@ -36,6 +39,26 @@ export default function CalculatorPage() {
   const [height, setHeight] = useState("");
   const [activity, setActivity] = useState(1.375);
   const [weeklyChange, setWeeklyChange] = useState(0);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchProfile = async () => {
+      const docRef = doc(db, "users", user.uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        setUnit(data.unit || "imperial");
+        setAge(data.age !== undefined ? String(data.age) : "");
+        setGender(data.gender || "male");
+        setWeight(data.weight !== undefined ? String(data.weight) : "");
+        setHeight(data.height !== undefined ? String(data.height) : "");
+        setActivity(data.activity !== undefined ? String(data.activity) : 1.375);
+        setWeeklyChange(data.weeklyChange || 0);
+      }
+    };
+    fetchProfile();
+  }, [user]);
 
   const getWeightKg = () =>
     unit === "imperial" ? lbToKg(Number(weight)) : Number(weight);
@@ -85,6 +108,25 @@ export default function CalculatorPage() {
       setWeight(weight ? lbToKg(Number(weight)).toFixed(1) : "");
       setHeight(height ? inToCm(Number(height)).toFixed(1) : "");
     }
+  };
+
+  const handleSave = async () => {
+    if (!user) return;
+    const docRef = doc(db, "users", user.uid);
+    await setDoc(
+      docRef,
+      {
+        unit,
+        age: Number(age),
+        gender,
+        weight: Number(weight),
+        height: Number(height),
+        activity: Number(activity),
+        weeklyChange,
+        dailyGoal: calcDailyGoal(),
+      },
+      { merge: true }
+    );
   };
 
   return (
@@ -239,7 +281,14 @@ export default function CalculatorPage() {
         </div>
       </div>
 
-      <Link href="/dashboard" className="mt-8 px-4 py-2 bg-gray-600 text-white rounded-xl">
+      <button
+        onClick={handleSave}
+        className="mt-8 px-4 py-2 bg-blue-700 text-white rounded-xl"
+      >
+        Save Goal
+      </button>
+
+      <Link href="/dashboard" className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl">
         ← Back to Dashboard
       </Link>
     </main>
