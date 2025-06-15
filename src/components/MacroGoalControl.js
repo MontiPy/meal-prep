@@ -1,6 +1,5 @@
 "use client";
 
-
 export default function MacroGoalControl({
   calorieGoal,
   // setCalorieGoal,
@@ -19,7 +18,8 @@ export default function MacroGoalControl({
         ...prev,
         [macro]: clamped,
         carbs:
-          100 - (macro === "protein" ? clamped : prev.protein) -
+          100 -
+          (macro === "protein" ? clamped : prev.protein) -
           (macro === "fat" ? clamped : prev.fat),
       };
     });
@@ -67,7 +67,7 @@ export default function MacroGoalControl({
           <input
             type="range"
             min={0}
-            max={100 - macroPercents.fat}
+            max={100}
             value={macroPercents.protein}
             onChange={(e) => handleChange("protein", e.target.value)}
             className="w-full accent-blue-700"
@@ -85,7 +85,7 @@ export default function MacroGoalControl({
           <input
             type="range"
             min={0}
-            max={100 - macroPercents.protein}
+            max={100}
             value={macroPercents.fat}
             onChange={(e) => handleChange("fat", e.target.value)}
             className="w-full accent-orange-700"
