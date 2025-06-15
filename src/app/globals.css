@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Quicksand:wght@400;600&display=swap");
+
+:root {
+  --anime-bg: #fff4e5;
+  --anime-card: #fff9f2;
+  --anime-primary: #ffcd1f;
+  --anime-accent: #ffb88c;
+  --anime-green: #b0e0a8;
+  --anime-blue: #6ec3f4;
+  --anime-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --font-quicksand: 'Quicksand', sans-serif;
+  --font-mochiy: 'Mochiy Pop One', sans-serif;
+}
+
+body {
+  font-family: var(--font-quicksand);
+  background: var(--anime-bg);
+}
+
+h1,
+h2,
+.font-heading {
+  font-family: var(--font-mochiy);
+}
+
 .anime-card {
   background: var(--anime-card);
   border-radius: 1.5rem;
