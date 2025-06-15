@@ -73,7 +73,7 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
 
   return (
     <div>
-      <table className="min-w-[400px] max-w-2xl w-full border text-xs md:text-base mb-4 mx-auto">
+      <table className="min-w-[400px] max-w-2xl w-4/5 border text-xs md:text-base mb-4 mx-auto">
         <thead>
           <tr>
             {MEALS.map((meal) => (
@@ -125,6 +125,24 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
           </tr>
         </tbody>
       </table>
+      {targetMacros && (
+        <div className="text-center text-sm mb-4">
+          <div>
+            <span className="font-semibold">Target:</span>{' '}
+            <span className="font-mono">{targetMacros.kcal}</span> kcal /{' '}
+            <span className="text-blue-700">{targetMacros.p}p</span> /{' '}
+            <span className="text-green-700">{targetMacros.c}c</span> /{' '}
+            <span className="text-orange-700">{targetMacros.f}f</span>
+          </div>
+          <div>
+            <span className="font-semibold">Actual:</span>{' '}
+            <span className="font-mono">{dailyTotal.kcal}</span> kcal /{' '}
+            <span className="text-blue-700">{dailyTotal.p}p</span> /{' '}
+            <span className="text-green-700">{dailyTotal.c}c</span> /{' '}
+            <span className="text-orange-700">{dailyTotal.f}f</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
