@@ -81,15 +81,28 @@ export default function SingleDayMealPlanPage() {
     setDragItem(null);
     if (!event.over) return;
     const meal = event.over.id.replace("SingleDay-", "");
+    const data = event.active.data.current;
     setMeals((prev) => {
       const updated = { ...prev };
       const already = updated[meal].find(
-        (i) =>
-          i.id === event.active.data.current.id &&
-          i.type === event.active.data.current.type
+        (i) => i.id === data.id && i.type === data.type
       );
       if (already) return prev;
-      updated[meal] = [...updated[meal], event.active.data.current];
+
+      let newItem = { ...data };
+      if (newItem.type === "ingredient") {
+        const gramsInput = window.prompt(
+          `How many grams of ${newItem.name}?`,
+          newItem.servingSize || ""
+        );
+        if (gramsInput === null) return prev;
+        const grams = parseFloat(gramsInput);
+        if (!isNaN(grams)) {
+          newItem.grams = grams;
+        }
+      }
+
+      updated[meal] = [...updated[meal], newItem];
       return updated;
     });
   };

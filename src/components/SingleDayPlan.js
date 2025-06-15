@@ -5,11 +5,14 @@ const MEALS = ["Breakfast", "Lunch", "Dinner"];
 
 function getItemMacros(item) {
   if (item.type === "ingredient" && item.caloriesPerServing !== undefined) {
+    const factor = item.grams
+      ? item.grams / (item.servingSize || 1)
+      : 1;
     return {
-      kcal: item.caloriesPerServing,
-      p: item.proteinPerServing,
-      c: item.carbsPerServing,
-      f: item.fatPerServing,
+      kcal: (item.caloriesPerServing || 0) * factor,
+      p: (item.proteinPerServing || 0) * factor,
+      c: (item.carbsPerServing || 0) * factor,
+      f: (item.fatPerServing || 0) * factor,
     };
   }
   if (item.type === "recipe" && item.macrosPerServing) {
@@ -98,12 +101,12 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
             {MEALS.map((meal) => (
               <td key={meal} className="border p-2 text-center">
                 <div>
-                  <span className="font-semibold">{macroSums[meal].kcal}</span> kcal
+                  <span className="font-semibold">{macroSums[meal].kcal.toFixed(0)}</span> kcal
                 </div>
                 <div>
-                  <span className="text-blue-700">{macroSums[meal].p}p</span> /{' '}
-                  <span className="text-green-700">{macroSums[meal].c}c</span> /{' '}
-                  <span className="text-orange-700">{macroSums[meal].f}f</span>
+                  <span className="text-blue-700">{macroSums[meal].p.toFixed(1)}p</span> /{' '}
+                  <span className="text-green-700">{macroSums[meal].c.toFixed(1)}c</span> /{' '}
+                  <span className="text-orange-700">{macroSums[meal].f.toFixed(1)}f</span>
                 </div>
               </td>
             ))}
@@ -112,13 +115,13 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
             <td colSpan={MEALS.length} className="border p-2 text-center text-sm">
               <div className="font-semibold mb-1">Daily Total</div>
               <div>
-                <span className="font-mono">{dailyTotal.kcal}</span> kcal
+                <span className="font-mono">{dailyTotal.kcal.toFixed(0)}</span> kcal
                 {diffIndicator(dailyTotal.kcal, targetMacros?.kcal)} {' / '}
-                <span className="font-mono text-blue-700">{dailyTotal.p}p</span>
+                <span className="font-mono text-blue-700">{dailyTotal.p.toFixed(1)}p</span>
                 {diffIndicator(dailyTotal.p, targetMacros?.p)} {' / '}
-                <span className="font-mono text-green-700">{dailyTotal.c}c</span>
+                <span className="font-mono text-green-700">{dailyTotal.c.toFixed(1)}c</span>
                 {diffIndicator(dailyTotal.c, targetMacros?.c)} {' / '}
-                <span className="font-mono text-orange-700">{dailyTotal.f}f</span>
+                <span className="font-mono text-orange-700">{dailyTotal.f.toFixed(1)}f</span>
                 {diffIndicator(dailyTotal.f, targetMacros?.f)}
               </div>
             </td>
@@ -136,10 +139,10 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
           </div>
           <div>
             <span className="font-semibold">Actual:</span>{' '}
-            <span className="font-mono">{dailyTotal.kcal}</span> kcal /{' '}
-            <span className="text-blue-700">{dailyTotal.p}p</span> /{' '}
-            <span className="text-green-700">{dailyTotal.c}c</span> /{' '}
-            <span className="text-orange-700">{dailyTotal.f}f</span>
+            <span className="font-mono">{dailyTotal.kcal.toFixed(0)}</span> kcal /{' '}
+            <span className="text-blue-700">{dailyTotal.p.toFixed(1)}p</span> /{' '}
+            <span className="text-green-700">{dailyTotal.c.toFixed(1)}c</span> /{' '}
+            <span className="text-orange-700">{dailyTotal.f.toFixed(1)}f</span>
           </div>
         </div>
       )}
