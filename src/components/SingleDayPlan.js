@@ -73,7 +73,7 @@ export default function SingleDayPlan({ meals, onRemoveItem, calorieGoal = 0, ma
 
   return (
     <div>
-      <table className="min-w-[400px] max-w-2xl w-full border text-xs md:text-base mb-4">
+      <table className="min-w-[400px] max-w-2xl w-full border text-xs md:text-base mb-4 mx-auto">
         <thead>
           <tr>
             {MEALS.map((meal) => (

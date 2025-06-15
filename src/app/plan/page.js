@@ -99,7 +99,7 @@ export default function SingleDayMealPlanPage() {
       onDragStart={handleDragStart}
     >
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[1fr_340px]">
-        <main className="p-4 overflow-auto">
+        <main className="p-4 overflow-auto flex flex-col items-center">
           <div className="mb-4">
             <MacroGoalControl
               calorieGoal={calorieGoal}
@@ -108,7 +108,7 @@ export default function SingleDayMealPlanPage() {
               setMacroPercents={setMacroPercents}
             />
           </div>
-          <h1 className="text-2xl font-bold mb-4">Single Day Meal Plan</h1>
+          <h1 className="text-2xl font-bold mb-4 text-center">Single Day Meal Plan</h1>
           <SingleDayPlan
             meals={meals}
             onRemoveItem={handleRemoveItem}
