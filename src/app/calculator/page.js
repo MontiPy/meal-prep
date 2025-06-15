@@ -31,11 +31,11 @@ export default function CalculatorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fff4e5]">
+    <div className="min-h-screen" style={{ background: 'var(--anime-bg)' }}>
       <HeaderBar />
       <main className="flex flex-col items-center justify-start px-2 min-h-[calc(100vh-70px)]">
-        <div className="w-full max-w-lg bg-white rounded-3xl shadow-lg p-8 mt-10 mb-16">
-          <h1 className="text-3xl font-bold mb-3 tracking-tight text-gray-900">
+        <div className="w-full max-w-lg anime-card mt-10 mb-16">
+          <h1 className="text-3xl font-bold mb-3 tracking-tight text-gray-900 font-heading">
             TDEE Calculator
           </h1>
           <p className="mb-7 text-base text-gray-800 leading-snug">
@@ -53,11 +53,9 @@ export default function CalculatorPage() {
             className="flex flex-col gap-4"
           >
             <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Gender
-              </label>
+              <label className="anime-label">Gender</label>
               <select
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
+                className="anime-input"
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
                 required
@@ -68,12 +66,10 @@ export default function CalculatorPage() {
               </select>
             </div>
             <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Age (years)
-              </label>
+              <label className="anime-label">Age (years)</label>
               <input
                 type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
+                className="anime-input"
                 placeholder="Enter your age"
                 value={age}
                 min={10}
@@ -83,12 +79,10 @@ export default function CalculatorPage() {
               />
             </div>
             <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Height (cm)
-              </label>
+              <label className="anime-label">Height (cm)</label>
               <input
                 type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
+                className="anime-input"
                 placeholder="Enter your height"
                 value={height}
                 min={90}
@@ -98,12 +92,10 @@ export default function CalculatorPage() {
               />
             </div>
             <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Weight (kg)
-              </label>
+              <label className="anime-label">Weight (kg)</label>
               <input
                 type="number"
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
+                className="anime-input"
                 placeholder="Enter your weight"
                 value={weight}
                 min={30}
@@ -113,11 +105,9 @@ export default function CalculatorPage() {
               />
             </div>
             <div>
-              <label className="block text-base font-medium text-gray-900 mb-1">
-                Activity Level
-              </label>
+              <label className="anime-label">Activity Level</label>
               <select
-                className="w-full rounded-xl border border-gray-200 focus:border-blue-400 bg-white px-4 py-3 text-gray-900 text-base focus:outline-none"
+                className="anime-input"
                 value={activity}
                 onChange={(e) => setActivity(e.target.value)}
                 required
@@ -130,10 +120,7 @@ export default function CalculatorPage() {
                 ))}
               </select>
             </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-xl transition mt-2"
-            >
+            <button type="submit" className="anime-btn w-full mt-2">
               Calculate TDEE
             </button>
           </form>
