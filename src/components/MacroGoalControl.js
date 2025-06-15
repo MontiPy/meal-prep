@@ -1,42 +1,34 @@
 "use client";
-import { useEffect } from "react";
-
+const MACRO_RANGES = {
+  protein: { min: 20, max: 35 },
+  fat: { min: 20, max: 35 },
+  carbs: { min: 35, max: 60 }, // not used for slider, but for info
+};
+function isWithin(val, { min, max }) {
+  return val >= min && val <= max;
+}
 export default function MacroGoalControl({
   calorieGoal,
-  // setCalorieGoal,
   macroPercents,
   setMacroPercents,
-  // userCalorieTarget,
 }) {
   // Handler for sliders
   const handleChange = (macro, value) => {
-    value = Math.max(0, Math.min(100, Number(value)));
-    let other = macro === "protein" ? "fat" : "protein";
-    let carbs = 100 - value - macroPercents[other];
-    if (carbs < 0) {
-      // Reduce other macro if needed
-      let over = Math.abs(carbs);
-      let newOther = Math.max(0, macroPercents[other] - over);
-      carbs = 100 - value - newOther;
-      setMacroPercents({
-        ...macroPercents,
-        [macro]: value,
-        [other]: newOther,
-        carbs,
-      });
-    } else {
-      setMacroPercents({
-        ...macroPercents,
-        [macro]: value,
-        carbs,
-      });
-    }
+    value = Number(value);
+    const other = macro === "protein" ? "fat" : "protein";
+    setMacroPercents((prev) => {
+      // clamp so carbs never drop below zero
+      const clamped = Math.max(0, Math.min(100 - prev[other], value));
+      return {
+        ...prev,
+        [macro]: clamped,
+        carbs:
+          100 -
+          (macro === "protein" ? clamped : prev.protein) -
+          (macro === "fat" ? clamped : prev.fat),
+      };
+    });
   };
-
-  // When user info updates, update calorieGoal (if desired)
-  // useEffect(() => {
-  //   if (userCalorieTarget && !calorieGoal) setCalorieGoal(userCalorieTarget);
-  // }, [userCalorieTarget, calorieGoal, setCalorieGoal]);
 
   return (
     <div className="mb-4 p-4 bg-white rounded shadow max-w-2xl mx-auto flex flex-col gap-3">
@@ -44,16 +36,6 @@ export default function MacroGoalControl({
         <label className="text-sm font-semibold">Daily Calorie Target:</label>
         <span className="ml-2 font-mono">{calorieGoal ?? "—"}</span>
         <span className="text-gray-600 ml-1 text-sm">kcal</span>
-        {/* {setCalorieGoal && (
-          <input
-            type="number"
-            className="border p-1 rounded w-20 ml-4"
-            value={calorieGoal}
-            onChange={(e) => setCalorieGoal(Number(e.target.value))}
-            min={0}
-            step={1}
-          />
-        )} */}
       </div>
       <div className="flex gap-6 items-center">
         <div className="flex flex-col gap-4 items-end text-right min-w-[58px]">
@@ -75,7 +57,7 @@ export default function MacroGoalControl({
           <input
             type="range"
             min={0}
-            max={100 - macroPercents.fat}
+            max={100}
             value={macroPercents.protein}
             onChange={(e) => handleChange("protein", e.target.value)}
             className="w-full accent-blue-700"
@@ -93,7 +75,7 @@ export default function MacroGoalControl({
           <input
             type="range"
             min={0}
-            max={100 - macroPercents.protein}
+            max={100}
             value={macroPercents.fat}
             onChange={(e) => handleChange("fat", e.target.value)}
             className="w-full accent-orange-700"
