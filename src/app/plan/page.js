@@ -34,8 +34,18 @@ export default function SingleDayMealPlanPage() {
       if (!user) return;
       const docRef = doc(db, "users", user.uid);
       const snap = await getDoc(docRef);
-      if (snap.exists() && snap.data().dailyGoal) {
-        setCalorieGoal(snap.data().dailyGoal);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.dailyGoal) {
+          setCalorieGoal(data.dailyGoal);
+        }
+        if (data.macroPercents) {
+          setMacroPercents({
+            protein: data.macroPercents.protein ?? 30,
+            carbs: data.macroPercents.carbs ?? 40,
+            fat: data.macroPercents.fat ?? 30,
+          });
+        }
       }
     };
     fetchGoal();
