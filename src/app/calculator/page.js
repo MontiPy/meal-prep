@@ -39,6 +39,8 @@ export default function CalculatorPage() {
   const [height, setHeight] = useState("");
   const [activity, setActivity] = useState(1.375);
   const [weeklyChange, setWeeklyChange] = useState(0);
+  const [hasProfile, setHasProfile] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
   const { user } = useAuth();
 
   useEffect(() => {
@@ -57,7 +59,11 @@ export default function CalculatorPage() {
           data.activity !== undefined ? String(data.activity) : 1.375
         );
         setWeeklyChange(data.weeklyChange || 0);
+        setHasProfile(true);
+      } else {
+        setHasProfile(false);
       }
+      setSaveStatus("");
     };
     fetchProfile();
   }, [user]);
@@ -129,7 +135,17 @@ export default function CalculatorPage() {
       },
       { merge: true }
     );
+    setHasProfile(true);
+    setSaveStatus("saved");
+    setTimeout(() => setSaveStatus(""), 3000);
   };
+
+  const buttonText =
+    saveStatus === "saved"
+      ? "Goal Saved!"
+      : hasProfile
+      ? "Update Goal"
+      : "Save Goal";
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen p-6">
@@ -291,7 +307,7 @@ export default function CalculatorPage() {
         onClick={handleSave}
         className="mt-8 px-4 py-2 bg-blue-700 text-white rounded-xl"
       >
-        Save Goal
+        {buttonText}
       </button>
 
       <Link
