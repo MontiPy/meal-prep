@@ -91,13 +91,18 @@ export default function ShoppingPage() {
         <h1 className="text-3xl font-bold mb-4 font-heading text-center">Shopping List</h1>
         <div className="mb-4 text-center">
           <label className="mr-2 font-semibold">Days:</label>
-          <input
-            type="number"
-            min={1}
-            className="border px-2 py-1 w-20 text-center"
-            value={days}
-            onChange={(e) => setDays(Math.max(1, Number(e.target.value)))}
-          />
+          <div className="inline-flex gap-1">
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
+              <button
+                key={n}
+                type="button"
+                onClick={() => setDays(n)}
+                className={`anime-btn px-2 py-1 text-sm ${days === n ? "bg-blue-600 text-white" : ""}`}
+              >
+                {n}
+              </button>
+            ))}
+          </div>
         </div>
         {planList.length > 0 && (
           <div className="mb-4 flex items-center gap-2">
