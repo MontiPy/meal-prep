@@ -191,15 +191,16 @@ export default function SingleDayMealPlanPage() {
     >
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[1fr_340px]">
         <main className="p-4 overflow-auto flex flex-col items-center">
-          <div className="mb-4">
-            <MacroGoalControl
-              calorieGoal={calorieGoal}
-              // setCalorieGoal={setCalorieGoal}
-              macroPercents={macroPercents}
-              setMacroPercents={setMacroPercents}
-            />
-          </div>
-          <div className="mb-4 flex flex-col items-center gap-2 w-full max-w-md">
+          <div className="w-full max-w-2xl">
+            <div className="mb-4">
+              <MacroGoalControl
+                calorieGoal={calorieGoal}
+                // setCalorieGoal={setCalorieGoal}
+                macroPercents={macroPercents}
+                setMacroPercents={setMacroPercents}
+              />
+            </div>
+            <div className="mb-4 flex flex-col items-center gap-2 w-full max-w-md">
             <input
               className="border px-2 py-1 w-full"
               placeholder="Plan Name"
@@ -207,7 +208,7 @@ export default function SingleDayMealPlanPage() {
               onChange={(e) => setPlanName(e.target.value)}
             />
             {planList.length > 0 && (
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex flex-wrap items-center gap-2 w-full">
                 <select
                   className="border px-2 py-1 flex-1"
                   value={selectedPlan}
@@ -236,24 +237,25 @@ export default function SingleDayMealPlanPage() {
                 </button>
               </div>
             )}
-          </div>
-          <h1 className="text-2xl font-bold mb-4 text-center">
+            </div>
+            <h1 className="text-2xl font-bold mb-4 text-center">
             Single Day Meal Plan
-          </h1>
-          <SingleDayPlan
-            meals={meals}
-            onRemoveItem={handleRemoveItem}
-            onUpdateItem={handleUpdateItem}
-            calorieGoal={calorieGoal}
-            macroPercents={macroPercents}
-          />
-          <button
-            onClick={handleSavePlan}
-            className="anime-btn mt-4 px-4 py-2 bg-green-600 text-white"
-          >
-            Save Plan
-          </button>
-          {saveStatus && <div className="mt-2 text-sm">{saveStatus}</div>}
+            </h1>
+            <SingleDayPlan
+              meals={meals}
+              onRemoveItem={handleRemoveItem}
+              onUpdateItem={handleUpdateItem}
+              calorieGoal={calorieGoal}
+              macroPercents={macroPercents}
+            />
+            <button
+              onClick={handleSavePlan}
+              className="anime-btn mt-4 px-4 py-2 bg-green-600 text-white"
+            >
+              Save Plan
+            </button>
+            {saveStatus && <div className="mt-2 text-sm">{saveStatus}</div>}
+          </div>
           <DragOverlay>
             {dragItem && (
               <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">

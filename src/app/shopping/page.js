@@ -91,7 +91,7 @@ export default function ShoppingPage() {
         <h1 className="text-3xl font-bold mb-4 font-heading text-center">Shopping List</h1>
         <div className="mb-4 text-center">
           <label className="mr-2 font-semibold">Days:</label>
-          <div className="inline-flex gap-1">
+          <div className="inline-flex flex-wrap justify-center gap-1">
             {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
               <button
                 key={n}
@@ -105,7 +105,7 @@ export default function ShoppingPage() {
           </div>
         </div>
         {planList.length > 0 && (
-          <div className="mb-4 flex items-center gap-2">
+          <div className="mb-4 flex flex-wrap items-center gap-2">
             <select
               className="border px-2 py-1 flex-1"
               value={selectedPlan}
