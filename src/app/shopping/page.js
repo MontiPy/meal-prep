@@ -9,7 +9,7 @@ export default function ShoppingPage() {
   const { user } = useAuth();
   const [ingredients, setIngredients] = useState({});
   const [mealPlan, setMealPlan] = useState(null);
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState(7);
   const [planList, setPlanList] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState("");
 
