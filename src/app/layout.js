@@ -20,13 +20,18 @@ export const metadata = {
   title: "Meal Prep App",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${mochiy.variable} ${quicksand.variable}`}>
       <body>
         <AuthProvider>
           <HeaderBar />
-          <div className="flex">
+          <div className="flex flex-col md:flex-row">
             <NavSidebar />
             <div className="flex-1">
               <AuthGuard>{children}</AuthGuard>
