@@ -81,15 +81,32 @@ export default function SingleDayMealPlanPage() {
     setDragItem(null);
     if (!event.over) return;
     const meal = event.over.id.replace("SingleDay-", "");
+    const data = event.active.data.current;
     setMeals((prev) => {
       const updated = { ...prev };
       const already = updated[meal].find(
-        (i) =>
-          i.id === event.active.data.current.id &&
-          i.type === event.active.data.current.type
+        (i) => i.id === data.id && i.type === data.type
       );
       if (already) return prev;
-      updated[meal] = [...updated[meal], event.active.data.current];
+
+      let newItem = { ...data };
+      if (newItem.type === "ingredient") {
+        if (newItem.servingSize) {
+          newItem.grams = newItem.servingSize;
+        }
+      }
+
+      updated[meal] = [...updated[meal], newItem];
+      return updated;
+    });
+  };
+
+  const handleUpdateItem = (meal, idx, fields) => {
+    setMeals((prev) => {
+      const updated = { ...prev };
+      updated[meal] = updated[meal].map((item, i) =>
+        i === idx ? { ...item, ...fields } : item
+      );
       return updated;
     });
   };
@@ -124,6 +141,7 @@ export default function SingleDayMealPlanPage() {
           <SingleDayPlan
             meals={meals}
             onRemoveItem={handleRemoveItem}
+            onUpdateItem={handleUpdateItem}
             calorieGoal={calorieGoal}
             macroPercents={macroPercents}
           />

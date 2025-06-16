@@ -2,7 +2,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import MealItemCard from "./MealItemCard";
 
-export default function SingleMealDropCell({ meal, items, onRemoveItem }) {
+export default function SingleMealDropCell({ meal, items, onRemoveItem, onUpdateItem }) {
   const id = `SingleDay-${meal}`;
   const { setNodeRef, isOver } = useDroppable({ id });
 
@@ -19,6 +19,7 @@ export default function SingleMealDropCell({ meal, items, onRemoveItem }) {
             key={i.id + idx}
             item={i}
             onRemove={() => onRemoveItem(meal, idx)}
+            onUpdate={(fields) => onUpdateItem(meal, idx, fields)}
           />
         ))}
       </div>

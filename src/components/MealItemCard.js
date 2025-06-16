@@ -1,13 +1,13 @@
 "use client";
 function getIngredientNutrition(item) {
-  return item.caloriesPerServing !== undefined
-    ? {
-        kcal: item.caloriesPerServing,
-        p: item.proteinPerServing,
-        c: item.carbsPerServing,
-        f: item.fatPerServing,
-      }
-    : null;
+  if (item.caloriesPerServing === undefined) return null;
+  const factor = item.grams ? item.grams / (item.servingSize || 1) : 1;
+  return {
+    kcal: (item.caloriesPerServing || 0) * factor,
+    p: (item.proteinPerServing || 0) * factor,
+    c: (item.carbsPerServing || 0) * factor,
+    f: (item.fatPerServing || 0) * factor,
+  };
 }
 function getRecipeNutrition(item) {
   return item.macrosPerServing
@@ -22,7 +22,7 @@ function getRecipeNutrition(item) {
     : null;
 }
 
-export default function MealItemCard({ item, onRemove }) {
+export default function MealItemCard({ item, onRemove, onUpdate }) {
   const nutrition =
     item.type === "ingredient"
       ? getIngredientNutrition(item)
@@ -46,6 +46,18 @@ export default function MealItemCard({ item, onRemove }) {
     >
       <div className="flex items-center gap-x-1 whitespace-nowrap">
         <span>{item.name}</span>
+        {item.type === "ingredient" && (
+          <input
+            type="number"
+            step="any"
+            className="w-14 text-[9px] border rounded px-1"
+            value={item.grams ?? ""}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              onUpdate && onUpdate({ grams: isNaN(val) ? 0 : val });
+            }}
+          />
+        )}
         {item.type === "recipe" && (
           <span className="text-[9px] text-blue-600 bg-blue-50 rounded px-1 py-[1px]">
             [Recipe]
@@ -54,8 +66,8 @@ export default function MealItemCard({ item, onRemove }) {
       </div>
       {nutrition && (
         <span className="text-[10px] text-gray-500 mt-[1px] whitespace-nowrap">
-          {nutrition.kcal} kcal / {nutrition.p}p / {nutrition.c}c /{" "}
-          {nutrition.f}f
+          {nutrition.kcal.toFixed ? nutrition.kcal.toFixed(0) : nutrition.kcal} kcal / {nutrition.p.toFixed ? nutrition.p.toFixed(1) : nutrition.p}p / {nutrition.c.toFixed ? nutrition.c.toFixed(1) : nutrition.c}c /{' '}
+          {nutrition.f.toFixed ? nutrition.f.toFixed(1) : nutrition.f}f
         </span>
       )}
       <button
