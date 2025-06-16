@@ -17,7 +17,7 @@ export default function HeaderBar() {
             />
           </svg> */}
           <span className="font-extrabold text-lg text-gray-900 tracking-tight font-heading">
-            MealPrep
+            Prep Thy Mealz
           </span>
         </div>
         <nav className="hidden md:flex items-center gap-7">

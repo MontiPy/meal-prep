@@ -9,7 +9,9 @@ export default function ShoppingPage() {
   const { user } = useAuth();
   const [ingredients, setIngredients] = useState({});
   const [mealPlan, setMealPlan] = useState(null);
-  const [days, setDays] = useState(1);
+  const [days, setDays] = useState(7);
+  const [planList, setPlanList] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -33,6 +35,24 @@ export default function ShoppingPage() {
     };
     fetchPlan();
   }, [user]);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      if (!user) return;
+      const snap = await getDocs(collection(db, "users", user.uid, "plans"));
+      setPlanList(snap.docs.map((d) => d.id));
+    };
+    fetchPlans();
+  }, [user]);
+
+  const handleLoadPlan = async (name) => {
+    if (!user || !name) return;
+    const snap = await getDoc(doc(db, "users", user.uid, "plans", name));
+    if (snap.exists()) {
+      const data = snap.data();
+      setMealPlan(data.meals || null);
+    }
+  };
 
   const totals = {};
   if (mealPlan) {
@@ -71,14 +91,41 @@ export default function ShoppingPage() {
         <h1 className="text-3xl font-bold mb-4 font-heading text-center">Shopping List</h1>
         <div className="mb-4 text-center">
           <label className="mr-2 font-semibold">Days:</label>
-          <input
-            type="number"
-            min={1}
-            className="border px-2 py-1 w-20 text-center"
+          <select
+            className="border px-2 py-1"
             value={days}
-            onChange={(e) => setDays(Math.max(1, Number(e.target.value)))}
-          />
+            onChange={(e) => setDays(Number(e.target.value))}
+          >
+            {Array.from({ length: 7 }, (_, i) => i + 1).map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
         </div>
+        {planList.length > 0 && (
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <select
+              className="border px-2 py-1 flex-1"
+              value={selectedPlan}
+              onChange={(e) => setSelectedPlan(e.target.value)}
+            >
+              <option value="">Load plan...</option>
+              {planList.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => handleLoadPlan(selectedPlan)}
+              className="anime-btn px-2"
+            >
+              Load
+            </button>
+          </div>
+        )}
         {groceryList.length === 0 ? (
           <div className="text-center mb-4">No saved meal plan.</div>
         ) : (

@@ -1,7 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import Sidebar from "@/components/Sidebar";
 import SingleDayPlan from "@/components/SingleDayPlan";
@@ -27,6 +34,9 @@ export default function SingleDayMealPlanPage() {
     carbs: 35,
     fat: 25,
   });
+  const [planName, setPlanName] = useState("");
+  const [planList, setPlanList] = useState([]); // available saved plans
+  const [selectedPlan, setSelectedPlan] = useState("");
   const [dragItem, setDragItem] = useState(null);
   const [saveStatus, setSaveStatus] = useState("");
 
@@ -53,6 +63,15 @@ export default function SingleDayMealPlanPage() {
       }
     };
     fetchGoal();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      if (!user) return;
+      const snap = await getDocs(collection(db, "users", user.uid, "plans"));
+      setPlanList(snap.docs.map((d) => d.id));
+    };
+    fetchPlans();
   }, [user]);
 
   useEffect(() => {
@@ -123,13 +142,43 @@ export default function SingleDayMealPlanPage() {
     });
   };
 
+  const handleLoadPlan = async (name) => {
+    if (!user || !name) return;
+    const snap = await getDoc(doc(db, "users", user.uid, "plans", name));
+    if (snap.exists()) {
+      const data = snap.data();
+      setMeals(data.meals || meals);
+      if (data.macroPercents) {
+        setMacroPercents({
+          protein: data.macroPercents.protein ?? 40,
+          carbs: data.macroPercents.carbs ?? 35,
+          fat: data.macroPercents.fat ?? 25,
+        });
+      }
+      setPlanName(name);
+    }
+  };
+
+  const handleDeletePlan = async (name) => {
+    if (!user || !name) return;
+    await deleteDoc(doc(db, "users", user.uid, "plans", name));
+    setPlanList((prev) => prev.filter((n) => n !== name));
+    if (planName === name) {
+      setPlanName("");
+    }
+  };
+
   const handleSavePlan = async () => {
-    if (!user) return;
+    if (!user || !planName) return;
+    await setDoc(doc(db, "users", user.uid), { macroPercents }, { merge: true });
     await setDoc(
-      doc(db, "users", user.uid),
-      { mealPlan: meals },
+      doc(db, "users", user.uid, "plans", planName),
+      { meals, macroPercents },
       { merge: true }
     );
+    if (!planList.includes(planName)) {
+      setPlanList((prev) => [...prev, planName]);
+    }
     setSaveStatus("Saved!");
     setTimeout(() => setSaveStatus(""), 2000);
   };
@@ -142,31 +191,71 @@ export default function SingleDayMealPlanPage() {
     >
       <div className="grid min-h-screen grid-cols-1 md:grid-cols-[1fr_340px]">
         <main className="p-4 overflow-auto flex flex-col items-center">
-          <div className="mb-4">
-            <MacroGoalControl
-              calorieGoal={calorieGoal}
-              // setCalorieGoal={setCalorieGoal}
-              macroPercents={macroPercents}
-              setMacroPercents={setMacroPercents}
+          <div className="w-full max-w-2xl">
+            <div className="mb-4">
+              <MacroGoalControl
+                calorieGoal={calorieGoal}
+                // setCalorieGoal={setCalorieGoal}
+                macroPercents={macroPercents}
+                setMacroPercents={setMacroPercents}
+              />
+            </div>
+            <div className="mb-4 flex flex-col items-center gap-2 w-full max-w-md">
+            <input
+              className="border px-2 py-1 w-full"
+              placeholder="Plan Name"
+              value={planName}
+              onChange={(e) => setPlanName(e.target.value)}
             />
-          </div>
-          <h1 className="text-2xl font-bold mb-4 text-center">
+            {planList.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 w-full">
+                <select
+                  className="border px-2 py-1 flex-1"
+                  value={selectedPlan}
+                  onChange={(e) => setSelectedPlan(e.target.value)}
+                >
+                  <option value="">Load plan...</option>
+                  {planList.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => handleLoadPlan(selectedPlan)}
+                  className="anime-btn px-2"
+                >
+                  Load
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDeletePlan(selectedPlan)}
+                  className="anime-btn px-2 text-red-600"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
+            </div>
+            <h1 className="text-2xl font-bold mb-4 text-center">
             Single Day Meal Plan
-          </h1>
-          <SingleDayPlan
-            meals={meals}
-            onRemoveItem={handleRemoveItem}
-            onUpdateItem={handleUpdateItem}
-            calorieGoal={calorieGoal}
-            macroPercents={macroPercents}
-          />
-          <button
-            onClick={handleSavePlan}
-            className="anime-btn mt-4 px-4 py-2 bg-green-600 text-white"
-          >
-            Save Plan
-          </button>
-          {saveStatus && <div className="mt-2 text-sm">{saveStatus}</div>}
+            </h1>
+            <SingleDayPlan
+              meals={meals}
+              onRemoveItem={handleRemoveItem}
+              onUpdateItem={handleUpdateItem}
+              calorieGoal={calorieGoal}
+              macroPercents={macroPercents}
+            />
+            <button
+              onClick={handleSavePlan}
+              className="anime-btn mt-4 px-4 py-2 bg-green-600 text-white"
+            >
+              Save Plan
+            </button>
+            {saveStatus && <div className="mt-2 text-sm">{saveStatus}</div>}
+          </div>
           <DragOverlay>
             {dragItem && (
               <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">
