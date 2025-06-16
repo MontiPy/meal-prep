@@ -1,4 +1,5 @@
 "use client";
+import { useDraggable } from "@dnd-kit/core";
 function getIngredientNutrition(item) {
   if (item.caloriesPerServing === undefined) return null;
   const factor = item.grams ? item.grams / (item.servingSize || 1) : 1;
@@ -22,7 +23,11 @@ function getRecipeNutrition(item) {
     : null;
 }
 
-export default function MealItemCard({ item, onRemove, onUpdate }) {
+export default function MealItemCard({ item, meal, index, onRemove, onUpdate }) {
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: `plan-${meal}-${index}`,
+    data: { ...item, fromMeal: meal, index, source: "plan" },
+  });
   const nutrition =
     item.type === "ingredient"
       ? getIngredientNutrition(item)
@@ -30,18 +35,23 @@ export default function MealItemCard({ item, onRemove, onUpdate }) {
 
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
       className={`
-        bg-gray-100 
+        bg-gray-100
         inline-flex flex-col items-start text-xs
         px-2 py-1
         rounded
         shadow-sm
         whitespace-nowrap
+        ${isDragging ? "opacity-60" : ""}
       `}
       style={{
         minHeight: "28px",
         fontWeight: item.type === "recipe" ? "500" : "400",
         maxWidth: "220px",
+        cursor: "grab",
       }}
     >
       <div className="flex items-center gap-x-1 whitespace-nowrap">

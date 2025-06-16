@@ -18,6 +18,8 @@ export default function SingleMealDropCell({ meal, items, onRemoveItem, onUpdate
           <MealItemCard
             key={i.id + idx}
             item={i}
+            meal={meal}
+            index={idx}
             onRemove={() => onRemoveItem(meal, idx)}
             onUpdate={(fields) => onUpdateItem(meal, idx, fields)}
           />
