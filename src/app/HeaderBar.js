@@ -25,33 +25,27 @@ export default function HeaderBar() {
             href="/"
             className="text-gray-800 text-base font-medium hover:text-primary transition"
           >
-            Home
+            Dashboard
           </Link>
           <Link
-            href="#"
+            href="/plan"
             className="text-gray-800 text-base font-medium hover:text-primary transition"
           >
-            Recipes
+            Meal Plan
           </Link>
           <Link
-            href="#"
+            href="/calculator"
             className="text-gray-800 text-base font-medium hover:text-primary transition"
           >
-            About
+            Calculator
           </Link>
           <Link
-            href="#"
+            href="/shopping"
             className="text-gray-800 text-base font-medium hover:text-primary transition"
           >
-            Contact
+            Shopping List
           </Link>
         </nav>
-        <div className="flex gap-2">
-          <button className="anime-btn text-sm">Sign Up</button>
-          <button className="anime-btn text-sm" style={{ background: "var(--anime-blue)", color: "white" }}>
-            Login
-          </button>
-        </div>
       </div>
     </header>
   );
