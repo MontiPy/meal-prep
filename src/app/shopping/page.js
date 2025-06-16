@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "@/components/auth/AuthContext";
 
 export default function ShoppingPage() {
   const { user } = useAuth();
@@ -141,9 +141,6 @@ export default function ShoppingPage() {
             ))}
           </ul>
         )}
-        <Link href="/" className="anime-btn inline-block text-center w-full">
-          ← Back to Dashboard
-        </Link>
       </div>
     </main>
   );

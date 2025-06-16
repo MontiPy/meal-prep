@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "@/components/auth/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
@@ -310,12 +310,6 @@ export default function CalculatorPage() {
         {buttonText}
       </button>
 
-      <Link
-        href="/"
-        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl"
-      >
-        ← Back to Dashboard
-      </Link>
     </main>
   );
 }

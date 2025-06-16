@@ -1,7 +1,8 @@
 import "./globals.css";
-import { AuthProvider } from "./AuthContext";
-import AuthGuard from "./AuthGuard";
-import HeaderBar from "./HeaderBar";
+import { AuthProvider } from "@/components/auth/AuthContext";
+import AuthGuard from "@/components/auth/AuthGuard";
+import HeaderBar from "@/components/HeaderBar";
+import NavSidebar from "@/components/NavSidebar";
 import { Mochiy_Pop_One, Quicksand } from "next/font/google";
 
 const mochiy = Mochiy_Pop_One({ weight: "400", subsets: ["latin"], variable: "--font-mochiy" });
@@ -17,7 +18,12 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <HeaderBar />
-          <AuthGuard>{children}</AuthGuard>
+          <div className="flex">
+            <NavSidebar />
+            <div className="flex-1">
+              <AuthGuard>{children}</AuthGuard>
+            </div>
+          </div>
         </AuthProvider>
       </body>
     </html>

@@ -13,7 +13,7 @@ import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import Sidebar from "@/components/Sidebar";
 import SingleDayPlan from "@/components/SingleDayPlan";
 import MacroGoalControl from "@/components/MacroGoalControl";
-import { useAuth } from "../AuthContext"; // Adjust path as needed
+import { useAuth } from "@/components/auth/AuthContext"; // Adjust path as needed
 
 const MEALS = ["Breakfast", "Lunch", "Dinner"];
 
