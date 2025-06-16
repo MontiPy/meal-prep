@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function NavSidebar() {
   return (
-    <aside className="w-48 h-screen sticky top-0 border-r bg-gray-50 p-4 flex flex-col">
+    <aside className="hidden md:flex w-48 h-screen sticky top-0 border-r bg-gray-50 p-4 flex-col">
       <Link href="/" className="mb-2 hover:underline">
         Dashboard
       </Link>
