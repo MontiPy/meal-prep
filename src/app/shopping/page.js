@@ -55,6 +55,7 @@ export default function ShoppingPage() {
     id,
     name: ingredients[id]?.name || id,
     grams: g * days,
+    lbs: (g * days) / 453.592,
   }));
 
   return (
@@ -79,7 +80,7 @@ export default function ShoppingPage() {
               <li key={item.id} className="flex items-center gap-2 mb-1">
                 <input type="checkbox" className="mr-2" />
                 <span className="flex-1">
-                  {item.name} - {item.grams.toFixed(0)} g
+                  {item.name} - {item.grams.toFixed(0)} g ({item.lbs.toFixed(2)} lbs)
                 </span>
               </li>
             ))}
