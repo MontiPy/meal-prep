@@ -10,6 +10,8 @@ export default function ShoppingPage() {
   const [ingredients, setIngredients] = useState({});
   const [mealPlan, setMealPlan] = useState(null);
   const [days, setDays] = useState(1);
+  const [planList, setPlanList] = useState([]);
+  const [selectedPlan, setSelectedPlan] = useState("");
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -33,6 +35,24 @@ export default function ShoppingPage() {
     };
     fetchPlan();
   }, [user]);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      if (!user) return;
+      const snap = await getDocs(collection(db, "users", user.uid, "plans"));
+      setPlanList(snap.docs.map((d) => d.id));
+    };
+    fetchPlans();
+  }, [user]);
+
+  const handleLoadPlan = async (name) => {
+    if (!user || !name) return;
+    const snap = await getDoc(doc(db, "users", user.uid, "plans", name));
+    if (snap.exists()) {
+      const data = snap.data();
+      setMealPlan(data.meals || null);
+    }
+  };
 
   const totals = {};
   if (mealPlan) {
@@ -79,6 +99,29 @@ export default function ShoppingPage() {
             onChange={(e) => setDays(Math.max(1, Number(e.target.value)))}
           />
         </div>
+        {planList.length > 0 && (
+          <div className="mb-4 flex items-center gap-2">
+            <select
+              className="border px-2 py-1 flex-1"
+              value={selectedPlan}
+              onChange={(e) => setSelectedPlan(e.target.value)}
+            >
+              <option value="">Load plan...</option>
+              {planList.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              onClick={() => handleLoadPlan(selectedPlan)}
+              className="anime-btn px-2"
+            >
+              Load
+            </button>
+          </div>
+        )}
         {groceryList.length === 0 ? (
           <div className="text-center mb-4">No saved meal plan.</div>
         ) : (
