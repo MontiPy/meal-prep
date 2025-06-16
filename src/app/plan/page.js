@@ -103,25 +103,46 @@ export default function SingleDayMealPlanPage() {
   const handleDragEnd = (event) => {
     setDragItem(null);
     if (!event.over) return;
-    const meal = event.over.id.replace("SingleDay-", "");
+    const overId = event.over.id;
     const data = event.active.data.current;
-    setMeals((prev) => {
-      const updated = { ...prev };
-      const already = updated[meal].find(
-        (i) => i.id === data.id && i.type === data.type
-      );
-      if (already) return prev;
 
-      let newItem = { ...data };
-      if (newItem.type === "ingredient") {
-        if (newItem.servingSize) {
-          newItem.grams = newItem.servingSize;
-        }
+    if (overId === "Sidebar-ingredients" || overId === "Sidebar-recipes") {
+      if (data.source === "plan") {
+        setMeals((prev) => {
+          const updated = { ...prev };
+          updated[data.fromMeal].splice(data.index, 1);
+          return updated;
+        });
       }
+      return;
+    }
 
-      updated[meal] = [...updated[meal], newItem];
-      return updated;
-    });
+    if (overId.startsWith("SingleDay-")) {
+      const meal = overId.replace("SingleDay-", "");
+      if (data.source === "plan") {
+        setMeals((prev) => {
+          const updated = { ...prev };
+          const item = { ...data };
+          updated[data.fromMeal].splice(data.index, 1);
+          updated[meal] = [...updated[meal], item];
+          return updated;
+        });
+      } else {
+        setMeals((prev) => {
+          const updated = { ...prev };
+          const already = updated[meal].find(
+            (i) => i.id === data.id && i.type === data.type
+          );
+          if (already) return prev;
+          let newItem = { ...data };
+          if (newItem.type === "ingredient" && newItem.servingSize) {
+            newItem.grams = newItem.servingSize;
+          }
+          updated[meal] = [...updated[meal], newItem];
+          return updated;
+        });
+      }
+    }
   };
 
   const handleUpdateItem = (meal, idx, fields) => {

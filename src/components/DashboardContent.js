@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/components/auth/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
@@ -12,47 +12,29 @@ export default function DashboardContent() {
       className="flex flex-col items-center justify-center min-h-screen p-8"
       style={{ background: "var(--anime-bg)" }}
     >
-      <div className="w-full max-w-lg anime-card">
-        <div className="flex items-center justify-between mb-8">
-          <span className="text-lg">
-            🍳 Hello,{" "}
-            <span className="font-semibold">
-              {user?.displayName || user?.email}
-            </span>
-          </span>
-          <button
-            onClick={() => signOut(auth)}
-            className="anime-btn"
-            style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}
-          >
-            Sign Out
-          </button>
-        </div>
-        <h1
-          className="text-3xl font-bold mb-8 font-heading"
-          style={{ color: "#d45437" }}
-        >
-          What would you like to do?
+      <div className="w-full max-w-lg anime-card text-center space-y-4">
+        <h1 className="text-3xl font-bold" style={{ color: "#d45437" }}>
+          Welcome to Meal Prep!
         </h1>
-        <div className="flex flex-col gap-6">
-          <Link href="/calculator" className="anime-btn text-xl text-center">
-            🔥 BMR/TDEE Calculator
-          </Link>
-          <Link
-            href="/plan"
-            className="anime-btn text-xl text-center"
-            style={{ background: "var(--anime-accent)" }}
-          >
-            🍙 Meal Plan
-          </Link>
-          <Link
-            href="/shopping"
-            className="anime-btn text-xl text-center"
-            style={{ background: "var(--anime-green)" }}
-          >
-            🛒 Shopping List
-          </Link>
-        </div>
+        <p>
+          Use the menu on the left to explore the app. Build recipes and meal
+          plans by dragging ingredients and recipes into your daily meals. You
+          can drag items between meals or back to the sidebar to remove them.
+        </p>
+        <Image
+          src="/cooking.svg"
+          alt="Cooking"
+          width={200}
+          height={160}
+          className="mx-auto"
+        />
+        <button
+          onClick={() => signOut(auth)}
+          className="anime-btn mt-4"
+          style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}
+        >
+          Sign Out
+        </button>
       </div>
     </main>
   );
