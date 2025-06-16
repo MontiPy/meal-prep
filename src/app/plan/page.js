@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
 import { DndContext, closestCenter, DragOverlay } from "@dnd-kit/core";
 import Sidebar from "@/components/Sidebar";
 import SingleDayPlan from "@/components/SingleDayPlan";
@@ -28,6 +28,7 @@ export default function SingleDayMealPlanPage() {
     fat: 25,
   });
   const [dragItem, setDragItem] = useState(null);
+  const [saveStatus, setSaveStatus] = useState("");
 
   useEffect(() => {
     const fetchGoal = async () => {
@@ -45,6 +46,9 @@ export default function SingleDayMealPlanPage() {
             carbs: data.macroPercents.carbs ?? 40,
             fat: data.macroPercents.fat ?? 30,
           });
+        }
+        if (data.mealPlan) {
+          setMeals(data.mealPlan);
         }
       }
     };
@@ -119,6 +123,13 @@ export default function SingleDayMealPlanPage() {
     });
   };
 
+  const handleSavePlan = async () => {
+    if (!user) return;
+    await setDoc(doc(db, "users", user.uid), { mealPlan: meals }, { merge: true });
+    setSaveStatus("Saved!");
+    setTimeout(() => setSaveStatus("");, 2000);
+  };
+
   return (
     <DndContext
       collisionDetection={closestCenter}
@@ -145,6 +156,13 @@ export default function SingleDayMealPlanPage() {
             calorieGoal={calorieGoal}
             macroPercents={macroPercents}
           />
+          <button
+            onClick={handleSavePlan}
+            className="anime-btn mt-4 px-4 py-2 bg-green-600 text-white"
+          >
+            Save Plan
+          </button>
+          {saveStatus && <div className="mt-2 text-sm">{saveStatus}</div>}
           <DragOverlay>
             {dragItem && (
               <div className="p-2 bg-white rounded shadow border-2 border-blue-500 opacity-90 text-xs inline-flex flex-col items-start">
