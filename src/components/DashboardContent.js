@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "@/components/auth/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
