@@ -51,12 +51,19 @@ export default function ShoppingPage() {
     });
   }
 
-  const groceryList = Object.entries(totals).map(([id, g]) => ({
-    id,
-    name: ingredients[id]?.name || id,
-    grams: g * days,
-    lbs: (g * days) / 453.592,
-  }));
+  const groceryList = Object.entries(totals).map(([id, g]) => {
+    const ing = ingredients[id] || {};
+    const unit = ing.servingUnit || "g";
+    const amount = g * days;
+    const isGramUnit = unit.toLowerCase().startsWith("g");
+    return {
+      id,
+      name: ing.name || id,
+      amount,
+      unit,
+      lbs: isGramUnit ? amount / 453.592 : null,
+    };
+  });
 
   return (
     <main className="flex flex-col items-center min-h-screen p-8" style={{ background: "var(--anime-bg)" }}>
@@ -80,7 +87,8 @@ export default function ShoppingPage() {
               <li key={item.id} className="flex items-center gap-2 mb-1">
                 <input type="checkbox" className="mr-2" />
                 <span className="flex-1">
-                  {item.name} - {item.grams.toFixed(0)} g ({item.lbs.toFixed(2)} lbs)
+                  {item.name} - {item.amount.toFixed(0)} {item.unit}
+                  {item.lbs !== null && ` (${item.lbs.toFixed(2)} lbs)`}
                 </span>
               </li>
             ))}
