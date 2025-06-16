@@ -28,16 +28,16 @@ export default function HeaderBar() {
             Dashboard
           </Link>
           <Link
-            href="/plan"
-            className="text-gray-800 text-base font-medium hover:text-primary transition"
-          >
-            Meal Plan
-          </Link>
-          <Link
             href="/calculator"
             className="text-gray-800 text-base font-medium hover:text-primary transition"
           >
             Calculator
+          </Link>
+          <Link
+            href="/plan"
+            className="text-gray-800 text-base font-medium hover:text-primary transition"
+          >
+            Meal Plan
           </Link>
           <Link
             href="/shopping"

@@ -125,9 +125,13 @@ export default function SingleDayMealPlanPage() {
 
   const handleSavePlan = async () => {
     if (!user) return;
-    await setDoc(doc(db, "users", user.uid), { mealPlan: meals }, { merge: true });
+    await setDoc(
+      doc(db, "users", user.uid),
+      { mealPlan: meals },
+      { merge: true }
+    );
     setSaveStatus("Saved!");
-    setTimeout(() => setSaveStatus("");, 2000);
+    setTimeout(() => setSaveStatus(""), 2000);
   };
 
   return (
