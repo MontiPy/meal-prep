@@ -1,7 +1,13 @@
-"use client";
 import Link from "next/link";
 
 export default function HeaderBar() {
+  const links = [
+    { href: "/", label: "Dashboard" },
+    { href: "/calculator", label: "Calculator" },
+    { href: "/plan", label: "Meal Plan" },
+    { href: "/shopping", label: "Shopping" },
+  ];
+
   return (
     <header
       className="sticky top-0 z-10 w-full border-b border-gray-100 shadow-sm"
@@ -13,18 +19,11 @@ export default function HeaderBar() {
         </span>
         {/* Mobile navigation */}
         <nav className="flex gap-3 sm:gap-4 text-sm md:hidden">
-          <Link href="/" className="hover:underline">
-            Dashboard
-          </Link>
-          <Link href="/calculator" className="hover:underline">
-            Calculator
-          </Link>
-          <Link href="/plan" className="hover:underline">
-            Meal Plan
-          </Link>
-          <Link href="/shopping" className="hover:underline">
-            Shopping
-          </Link>
+          {links.map(({ href, label }) => (
+            <Link key={href} href={href} className="hover:underline">
+              {label}
+            </Link>
+          ))}
         </nav>
       </div>
     </header>
