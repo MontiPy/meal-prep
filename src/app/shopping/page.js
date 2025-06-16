@@ -141,9 +141,6 @@ export default function ShoppingPage() {
             ))}
           </ul>
         )}
-        <Link href="/" className="anime-btn inline-block text-center w-full">
-          ← Back to Dashboard
-        </Link>
       </div>
     </main>
   );

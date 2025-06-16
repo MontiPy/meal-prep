@@ -310,12 +310,6 @@ export default function CalculatorPage() {
         {buttonText}
       </button>
 
-      <Link
-        href="/"
-        className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-xl"
-      >
-        ← Back to Dashboard
-      </Link>
     </main>
   );
 }
