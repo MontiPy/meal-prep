@@ -28,19 +28,22 @@ export default function DashboardContent() {
             Sign Out
           </button>
         </div>
-        <h1 className="text-3xl font-bold mb-8 font-heading" style={{ color: "#d45437" }}>
+        <h1
+          className="text-3xl font-bold mb-8 font-heading"
+          style={{ color: "#d45437" }}
+        >
           What would you like to do?
         </h1>
         <div className="flex flex-col gap-6">
           <Link href="/calculator" className="anime-btn text-xl text-center">
-            🍙 BMR/TDEE Calculator
+            🔥 BMR/TDEE Calculator
           </Link>
           <Link
             href="/plan"
             className="anime-btn text-xl text-center"
             style={{ background: "var(--anime-accent)" }}
           >
-            🥦 Meal Plan
+            🍙 Meal Plan
           </Link>
           <Link
             href="/shopping"

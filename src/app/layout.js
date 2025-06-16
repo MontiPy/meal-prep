@@ -5,8 +5,16 @@ import HeaderBar from "@/components/HeaderBar";
 import NavSidebar from "@/components/NavSidebar";
 import { Mochiy_Pop_One, Quicksand } from "next/font/google";
 
-const mochiy = Mochiy_Pop_One({ weight: "400", subsets: ["latin"], variable: "--font-mochiy" });
-const quicksand = Quicksand({ weight: ["400", "600"], subsets: ["latin"], variable: "--font-quicksand" });
+const mochiy = Mochiy_Pop_One({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-mochiy",
+});
+const quicksand = Quicksand({
+  weight: ["400", "600"],
+  subsets: ["latin"],
+  variable: "--font-quicksand",
+});
 
 export const metadata = {
   title: "Meal Prep App",
